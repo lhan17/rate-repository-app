@@ -4,6 +4,11 @@ import * as yup from 'yup'
 import Text from './Text'
 
 import TextInput from './TextInput'
+import useSignIn from '../hooks/useSignIn'
+import FormikTextInput from './FormikTextInput'
+import { useAuthStorage } from '../hooks/useAuthStorage'
+import { useNavigate } from 'react-router-native'
+import { ApolloClient } from '@apollo/client'
 
 const styles = StyleSheet.create({
     container: {
@@ -69,36 +74,7 @@ const initialValues = {
     password: '',
 }
 
-const FormikTextInput = ({ name, ...props }) => {
-    const [field, meta, helpers] = useField(name)
-    const showError = meta.touched && meta.error
-    const inputContainerStyle = showError
-        ? styles.inputContainerError
-        : styles.inputContainer
-    return (
-        <>
-            <View style={inputContainerStyle}>
-                {props.icon && (
-                    <Text style={styles.inputIcon}>{props.icon}</Text>
-                )}
-                <TextInput
-                    onChangeText={(value) => helpers.setValue(value)}
-                    onBlur={() => helpers.setTouched(true)}
-                    value={field.value}
-                    error={showError}
-                    style={styles.input}
-                    {...props}
-                />
-            </View>
-            {showError && <Text style={styles.errorText}>{meta.error}</Text>}
-        </>
-    )
-}
-
 const UsernameForm = ({ onSubmit }) => {
-    const [usernameField, usernameMeta, usernameHelpers] = useField('username')
-    const [passwordField, passwordMeta, passwordHelpers] = useField('password')
-
     return (
         <View style={styles.container}>
             <FormikTextInput name='username' placeholder='Username' icon='👤' />
@@ -116,9 +92,18 @@ const UsernameForm = ({ onSubmit }) => {
 }
 
 const SignIn = () => {
-    const onSubmit = (values) => {
-        const username = values.username
-        const password = values.password
+    const [signIn, result] = useSignIn()
+    const authStorage = useAuthStorage()
+    const navigate = useNavigate()
+    const onSubmit = async (values) => {
+        const { username, password } = values
+
+        try {
+            const { data } = await signIn({ username, password })
+            navigate('/')
+        } catch (e) {
+            console.log('errorr', e)
+        }
     }
 
     return (
