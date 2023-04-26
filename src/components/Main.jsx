@@ -1,10 +1,14 @@
 import Constants from 'expo-constants'
 import { Text, StyleSheet, View } from 'react-native'
-import RepositoryList from './RepositoryList'
+import RepositoryList, { RepositoryListContainer } from './RepositoryList'
 import AppBar from './AppBar'
 import { Route, Routes, Navigate } from 'react-router-native'
 import SignIn from './SignIn'
-
+import RepositoryItem from './RepositoryItem'
+import RepositoryItemView from './RepositoryItemView'
+import CreateReview from './CreateReview'
+import CreateUser from './SignUp'
+import MyReviews from './MyReviews'
 const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
@@ -21,6 +25,10 @@ const Main = () => {
                 <Route path='/' element={<RepositoryList />} exact />
                 <Route path='/signin' element={<SignIn />} exact />
                 <Route path='*' element={<Navigate to='/' replace />} />
+                <Route path='/:id' element={<RepositoryItemView />} />
+                <Route path='/createReview' element={<CreateReview />} />
+                <Route path='/signup' element={<CreateUser />} />
+                <Route path='/myreviews' element={<MyReviews />} />
             </Routes>
         </View>
     )

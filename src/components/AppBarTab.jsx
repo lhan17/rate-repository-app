@@ -25,7 +25,7 @@ const AppBarTab = () => {
         await authStorage.removeAccessToken()
         apolloClient.resetStore()
     }
-    const { data, loading } = useQuery(ME)
+    const { data, loading } = useQuery(ME, { fetchPolicy: 'cache-and-network' })
 
     if (loading) {
         return <ActivityIndicator />
@@ -37,13 +37,26 @@ const AppBarTab = () => {
                 <Text style={styles.text}>Repositories</Text>
             </Link>
             {data.me ? (
-                <Pressable onPress={handlePress}>
-                    <Text style={styles.text}>sign out</Text>
-                </Pressable>
+                <View style={styles.container}>
+                    <Link to='/createReview'>
+                        <Text style={styles.text}>Create a review</Text>
+                    </Link>
+                    <Link to='/myreviews'>
+                        <Text style={styles.text}>My reviews</Text>
+                    </Link>
+                    <Pressable onPress={handlePress}>
+                        <Text style={styles.text}>sign out</Text>
+                    </Pressable>
+                </View>
             ) : (
-                <Link to='/signin'>
-                    <Text style={styles.text}>sign in</Text>
-                </Link>
+                <View style={styles.container}>
+                    <Link to='/signin'>
+                        <Text style={styles.text}>sign in</Text>
+                    </Link>
+                    <Link to='/signup'>
+                        <Text style={styles.text}>sign up</Text>
+                    </Link>
+                </View>
             )}
         </View>
     )
